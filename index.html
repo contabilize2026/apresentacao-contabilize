@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plano Estratégico de Expansão</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Importação da biblioteca de ícones Lucide -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root {
+            --primary: #0d2932;
+            --primary-light: #164250;
+            --secondary: #35c0e6;
+            --secondary-glow: rgba(53, 192, 230, 0.3);
+            --accent: #10b981;
+            --text-light: #f8fafc;
+            --text-dark: #1e293b;
+            --text-muted: #64748b;
+            --bg-gray: #f4f8f9;
+            --card-bg: #ffffff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Outfit', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f4f8f9 0%, #e0e8eb 100%);
+            color: var(--text-dark);
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Navegação Lateral (Sidebar) */
+        .sidebar {
+            width: 320px;
+            background: linear-gradient(180deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: var(--text-light);
+            padding: 4rem 0 2.5rem 0; /* Espaço no topo ajustado */
+            display: flex;
+            flex-direction: column;
+            box-shadow: 4px 0 20px rgba(13, 41, 50, 0.15);
+            z-index: 10;
+        }
+
+        .nav-btn {
+            background: none;
+            border: none;
+            color: var(--text-light);
+            padding: 1rem 2rem;
+            text-align: left;
+            font-size: 1.05rem;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            opacity: 0.6;
+            border-left: 4px solid transparent;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            position: relative;
+        }
+
+        .nav-btn:hover {
+            opacity: 1;
+            background-color: rgba(255,255,255,0.03);
+            padding-left: 2.5rem;
+        }
+
+        .nav-btn.active {
+            opacity: 1;
+            background-color: rgba(53, 192, 230, 0.08);
+            border-left-color: var(--secondary);
+            font-weight: 600;
+            box-shadow: inset 20px 0 40px -20px var(--secondary-glow);
+        }
+
+        /* Área de Conteúdo Principal */
+        .main-content {
+            flex: 1;
+            padding: 4rem;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .slide {
+            display: none;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        .slide.active {
+            display: block;
+            animation: slideUpFade 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes slideUpFade {
+            0% { opacity: 0; transform: translateY(30px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        /* HOME SCREEN (O "Menu do Jogo") */
+        .home-hero {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: calc(100vh - 8rem);
+            text-align: center;
+        }
+
+        .home-title {
+            font-size: 3rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .home-subtitle {
+            font-size: 1.4rem;
+            color: var(--text-muted);
+            margin-bottom: 3rem;
+        }
+
+        .level-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            max-width: 1000px;
+        }
+
+        .level-btn {
+            background: var(--card-bg);
+            border: 2px solid transparent;
+            padding: 2.5rem 1.5rem;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px -10px rgba(13, 41, 50, 0.08);
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            color: var(--primary);
+            width: calc(33.333% - 20px);
+            min-width: 220px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .level-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--secondary);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+            transform-origin: left;
+        }
+
+        .level-btn:hover {
+            transform: translateY(-10px);
+            border-color: rgba(53, 192, 230, 0.3);
+            box-shadow: 0 20px 40px -10px var(--secondary-glow);
+        }
+
+        .level-btn:hover::before {
+            transform: scaleX(1);
+        }
+
+        .level-btn i {
+            color: var(--secondary);
+            transition: transform 0.3s ease;
+        }
+
+        .level-btn:hover i {
+            transform: scale(1.2);
+        }
+
+        .level-btn span {
+            font-size: 1.15rem;
+            font-weight: 600;
+        }
+
+        /* Outros estilos da apresentação */
+        .header-title {
+            font-size: 2.8rem;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .header-subtitle {
+            font-size: 1.25rem;
+            color: var(--text-muted);
+            margin-bottom: 3.5rem;
+            font-weight: 400;
+        }
+
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2.5rem;
+        }
+
+        .card {
+            background: var(--card-bg);
+            padding: 2.5rem;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px -10px rgba(13, 41, 50, 0.08);
+            border-top: 4px solid var(--secondary);
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px -10px rgba(13, 41, 50, 0.12);
+        }
+
+        .card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 150px;
+            height: 150px;
+            background: radial-gradient(circle, var(--secondary-glow) 0%, transparent 70%);
+            opacity: 0.2;
+            border-radius: 50%;
+            transform: translate(50%, -50%);
+        }
+
+        .card h3 {
+            font-size: 1.4rem;
+            margin-bottom: 1.2rem;
+            color: var(--primary);
+            font-weight: 600;
+        }
+        
+        .card > p {
+            line-height: 1.6;
+            color: var(--text-muted);
+            font-size: 1.05rem;
+        }
+
+        .card ul {
+            list-style: none;
+            margin-top: 1rem;
+        }
+
+        .card ul li {
+            margin-bottom: 1rem;
+            padding-left: 2rem;
+            position: relative;
+            line-height: 1.5;
+            color: var(--text-muted);
+            font-size: 1.05rem;
+        }
+
+        .card ul li i {
+            position: absolute;
+            left: 0;
+            top: 2px;
+            color: var(--secondary);
+            width: 18px;
+            height: 18px;
+        }
+
+        .ecosystem {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--card-bg);
+            padding: 3.5rem 2rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px -10px rgba(13, 41, 50, 0.08);
+            margin-top: 2rem;
+            position: relative;
+        }
+
+        .box {
+            text-align: center;
+            padding: 2.5rem 1.5rem;
+            border-radius: 16px;
+            width: 30%;
+            transition: all 0.4s ease;
+            position: relative;
+            z-index: 2;
+            background: #fff;
+        }
+
+        .box:hover {
+            transform: translateY(-10px);
+        }
+
+        .icon-wrapper {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem auto;
+            color: white;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        .box-brain { 
+            border: 1px solid rgba(53, 192, 230, 0.2);
+            box-shadow: 0 10px 30px rgba(53, 192, 230, 0.05);
+        }
+        .box-brain .icon-wrapper { background: linear-gradient(135deg, var(--primary), var(--primary-light)); }
+        
+        .box-lung { 
+            border: 1px solid rgba(16, 185, 129, 0.2); 
+            box-shadow: 0 10px 30px rgba(16, 185, 129, 0.05);
+        }
+        .box-lung .icon-wrapper { background: linear-gradient(135deg, var(--accent), #059669); }
+        
+        .box-channels { 
+            border: 1px solid rgba(245, 158, 11, 0.2); 
+            box-shadow: 0 10px 30px rgba(245, 158, 11, 0.05);
+        }
+        .box-channels .icon-wrapper { background: linear-gradient(135deg, #f59e0b, #d97706); }
+
+        .box h4 { 
+            margin-bottom: 12px; 
+            font-size: 1.3rem; 
+            color: var(--primary);
+            font-weight: 600;
+        }
+        
+        .box p { 
+            font-size: 0.95rem; 
+            color: var(--text-muted); 
+            line-height: 1.5;
+        }
+
+        .arrow-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--secondary);
+            animation: pulseArrow 2s infinite;
+        }
+
+        @keyframes pulseArrow {
+            0% { transform: scale(1) translateX(0); opacity: 0.6; }
+            50% { transform: scale(1.1) translateX(5px); opacity: 1; }
+            100% { transform: scale(1) translateX(0); opacity: 0.6; }
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            width: fit-content;
+        }
+
+        .badge-warning { background: #fffbeb; color: #d97706; border: 1px solid #fde68a; }
+        .badge-success { background: #f0fdf4; color: #15803d; border: 1px solid #bbf7d0; }
+        .badge-danger { background: #fee2e2; color: #b91c1c; border: 1px solid #fca5a5; }
+        .badge-purple { background: #f3e8ff; color: #7e22ce; border: 1px solid #d8b4fe; }
+
+        @media print {
+            body { display: block; height: auto; overflow: visible; background: white !important; }
+            .sidebar, .home-hero { display: none !important; }
+            .main-content { padding: 0 !important; display: block; overflow: visible; }
+            .slide { 
+                display: block !important; opacity: 1 !important; transform: none !important; 
+                animation: none !important; page-break-after: always; padding: 2cm !important; height: 100vh; 
+            }
+            #slide0 { display: none !important; }
+            .card, .ecosystem { box-shadow: none !important; border: 1px solid #e2e8f0; }
+            .arrow-container { animation: none !important; }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <!-- Botão Início -->
+        <button id="btn0" class="nav-btn active" onclick="showSlide('slide0', 'btn0')">
+            <i data-lucide="home"></i> Início
+        </button>
+        <button id="btn1" class="nav-btn" onclick="showSlide('slide1', 'btn1')">
+            <i data-lucide="scan-search"></i> 1. Radiografia Atual
+        </button>
+        <button id="btn2" class="nav-btn" onclick="showSlide('slide2', 'btn2')">
+            <i data-lucide="network"></i> 2. Visão Arquitetural
+        </button>
+        <button id="btn3" class="nav-btn" onclick="showSlide('slide3', 'btn3')">
+            <i data-lucide="building-2"></i> 3. Inteligência Societária
+        </button>
+        <button id="btn4" class="nav-btn" onclick="showSlide('slide4', 'btn4')">
+            <i data-lucide="truck"></i> 4. Malha Logística
+        </button>
+        <button id="btn5" class="nav-btn" onclick="showSlide('slide5', 'btn5')">
+            <i data-lucide="store"></i> 5. Expansão Comercial
+        </button>
+    </div>
+
+    <div class="main-content">
+        
+        <!-- Slide 0: Home (Menu do Jogo) -->
+        <div id="slide0" class="slide active">
+            <div class="home-hero">
+                <img src="logotipo_grupo-villela(1).png" alt="Grupo Villela" style="height: 90px; width: auto; object-fit: contain; margin-bottom: 2rem;" onerror="this.style.display='none';">
+                <h1 class="home-title">Diagnóstico e Estruturação</h1>
+                <p class="home-subtitle">Selecione uma fase para iniciar a apresentação executiva</p>
+                
+                <div class="level-grid">
+                    <button class="level-btn" onclick="showSlide('slide1', 'btn1')">
+                        <i data-lucide="scan-search" style="width: 48px; height: 48px;"></i>
+                        <span>1. Radiografia Atual</span>
+                    </button>
+                    <button class="level-btn" onclick="showSlide('slide2', 'btn2')">
+                        <i data-lucide="network" style="width: 48px; height: 48px;"></i>
+                        <span>2. Visão Arquitetural</span>
+                    </button>
+                    <button class="level-btn" onclick="showSlide('slide3', 'btn3')">
+                        <i data-lucide="building-2" style="width: 48px; height: 48px;"></i>
+                        <span>3. Intel. Societária</span>
+                    </button>
+                    <button class="level-btn" onclick="showSlide('slide4', 'btn4')">
+                        <i data-lucide="truck" style="width: 48px; height: 48px;"></i>
+                        <span>4. Malha Logística</span>
+                    </button>
+                    <button class="level-btn" onclick="showSlide('slide5', 'btn5')">
+                        <i data-lucide="store" style="width: 48px; height: 48px;"></i>
+                        <span>5. Expansão Comercial</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 1: Radiografia Atual -->
+        <div id="slide1" class="slide">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 2.5rem;">
+                <div>
+                    <h2 class="header-title">Radiografia Societária Atual</h2>
+                    <p class="header-subtitle" style="margin-bottom: 0;">Mapeamento dos CNPJs, regimes tributários e exposição de risco via cruzamento de CPF.</p>
+                </div>
+                <img src="logotipo_grupo-villela(1).png" alt="Grupo Villela" style="height: 60px; width: auto; object-fit: contain;" onerror="this.style.display='none';">
+            </div>
+            
+            <div class="card-grid" style="margin-bottom: 2.5rem;">
+                <div class="card" style="border-top-color: #ef4444;">
+                    <div class="icon-wrapper" style="background: linear-gradient(135deg, #ef4444, #b91c1c); width: 48px; height: 48px; margin: 0 0 1rem 0;"><i data-lucide="building"></i></div>
+                    <h3 style="font-size: 1.15rem;">DISTRITO MAT. ELÉTRICOS</h3>
+                    <p style="font-size: 0.95rem; margin-bottom: 5px; color: var(--text-dark);"><strong>Matriz:</strong> 08.329.509/0001-94</p>
+                    <p style="font-size: 0.95rem; margin-bottom: 10px; color: var(--text-dark);"><strong>Filial:</strong> 08.329.509/0002-75</p>
+                    <span class="status-badge badge-purple" style="margin-bottom: 15px;">
+                        <i data-lucide="calculator" size="14"></i> Lucro Presumido
+                    </span>
+                    <div style="flex-grow: 1;"></div>
+                    <span class="status-badge badge-danger" style="margin-top: 10px; margin-bottom: 0;">
+                        <i data-lucide="user-cog" size="14"></i> Única Sócia-Admin.
+                    </span>
+                </div>
+
+                <div class="card" style="border-top-color: #f59e0b;">
+                    <div class="icon-wrapper" style="background: linear-gradient(135deg, #f59e0b, #d97706); width: 48px; height: 48px; margin: 0 0 1rem 0;"><i data-lucide="building-2"></i></div>
+                    <h3 style="font-size: 1.15rem;">INVOLUZ EQUIPAMENTOS</h3>
+                    <p style="font-size: 0.95rem; margin-bottom: 10px; color: var(--text-dark);"><strong>CNPJ:</strong> 04.180.002/0001-60</p>
+                    <span class="status-badge badge-success" style="margin-bottom: 15px;">
+                        <i data-lucide="pie-chart" size="14"></i> Simples Nacional (Desde 2024)
+                    </span>
+                    <div style="flex-grow: 1;"></div>
+                    <span class="status-badge badge-warning" style="margin-top: 10px; margin-bottom: 0;">
+                        <i data-lucide="user-check" size="14"></i> Administradora
+                    </span>
+                </div>
+
+                <div class="card" style="border-top-color: #f59e0b;">
+                    <div class="icon-wrapper" style="background: linear-gradient(135deg, #f59e0b, #d97706); width: 48px; height: 48px; margin: 0 0 1rem 0;"><i data-lucide="store"></i></div>
+                    <h3 style="font-size: 1.15rem;">UP MAT. ELÉTRICOS</h3>
+                    <p style="font-size: 0.95rem; margin-bottom: 10px; color: var(--text-dark);"><strong>CNPJ:</strong> 52.785.921/0001-00</p>
+                    <span class="status-badge badge-success" style="margin-bottom: 15px;">
+                        <i data-lucide="pie-chart" size="14"></i> Simples Nacional (Desde 2023)
+                    </span>
+                    <div style="flex-grow: 1;"></div>
+                    <span class="status-badge badge-warning" style="margin-top: 10px; margin-bottom: 0;">
+                        <i data-lucide="user-check" size="14"></i> Administradora
+                    </span>
+                </div>
+            </div>
+
+            <!-- Alerta Legal -->
+            <div class="ecosystem" style="padding: 2.5rem; background: #fef2f2; border: 1px solid #fecaca; display: block; margin-top: 0;">
+                <h4 style="color: #b91c1c; margin-bottom: 15px; font-size: 1.25rem; display: flex; align-items: center; gap: 10px; font-weight: 700;">
+                    <i data-lucide="alert-triangle"></i> Risco de Grupo Econômico de Fato
+                </h4>
+                <p style="color: #7f1d1d; font-size: 1.1rem; line-height: 1.6;">
+                    A gestão simultânea de empresas no <strong>Simples Nacional</strong> (UP e INVOLUZ) e no <strong>Lucro Presumido</strong> (DISTRITO) pelo mesmo CPF (Administradora) é um alvo clássico da Receita Federal.<br><br>
+                    Este cenário configura fortes indícios de <u>Grupo Econômico e confusão patrimonial</u>. Ao cruzar os dados, o Fisco pode somar o faturamento global. Se o total ultrapassar os R$ 4,8 milhões, a UP e a INVOLUZ sofrem <strong>exclusão sumária e retroativa</strong> do Simples Nacional, gerando um passivo fiscal altíssimo.
+                </p>
+            </div>
+        </div>
+
+        <!-- Slide 2: Visão Arquitetural -->
+        <div id="slide2" class="slide">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 2.5rem;">
+                <div>
+                    <h2 class="header-title">O Ecossistema Ideal</h2>
+                    <p class="header-subtitle" style="margin-bottom: 0;">Um modelo desenhado para eficiência tributária, proteção patrimonial e escala.</p>
+                </div>
+                <img src="logotipo_grupo-villela(1).png" alt="Grupo Villela" style="height: 60px; width: auto; object-fit: contain;" onerror="this.style.display='none';">
+            </div>
+            
+            <div class="ecosystem">
+                <div class="box box-brain">
+                    <div class="icon-wrapper"><i data-lucide="brain"></i></div>
+                    <h4>O Cérebro (RS)</h4>
+                    <p>Centro de Inteligência<br>Gestão Patrimonial<br>Backoffice & Marketing</p>
+                </div>
+                
+                <div class="arrow-container"><i data-lucide="arrow-right-circle" size="32"></i></div>
+                
+                <div class="box box-lung">
+                    <div class="icon-wrapper"><i data-lucide="package-check"></i></div>
+                    <h4>O Pulmão (SC)</h4>
+                    <p>Hub Operacional<br>Benefícios Alfandegários<br>Expedição Nacional</p>
+                </div>
+                
+                <div class="arrow-container"><i data-lucide="arrow-right-circle" size="32"></i></div>
+                
+                <div class="box box-channels">
+                    <div class="icon-wrapper"><i data-lucide="shopping-bag"></i></div>
+                    <h4>Os Canais (Brasil)</h4>
+                    <p>Rede de Distribuidores (B2B)<br>E-commerce Direto (B2C)<br>Harmonia de Preços</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 3: Pilar Societário -->
+        <div id="slide3" class="slide">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 2.5rem;">
+                <div>
+                    <h2 class="header-title">Pilar 1: Inteligência Societária</h2>
+                    <p class="header-subtitle" style="margin-bottom: 0;">Diagnóstico de riscos estruturais e estratégias de blindagem legal.</p>
+                </div>
+                <img src="logotipo_grupo-villela(1).png" alt="Grupo Villela" style="height: 60px; width: auto; object-fit: contain;" onerror="this.style.display='none';">
+            </div>
+            
+            <div class="card-grid">
+                <div class="card">
+                    <span class="status-badge badge-warning">
+                        <i data-lucide="shield-alert" size="16"></i> Risco Mapeado
+                    </span>
+                    <h3>Auditoria de Enquadramento</h3>
+                    <p>Identificamos potenciais passivos relacionados ao cruzamento de dados de faturamento global (Limites de Receita) em participações múltiplas.</p>
+                </div>
+                <div class="card">
+                    <span class="status-badge badge-success">
+                        <i data-lucide="shield-check" size="16"></i> Solução Proposta
+                    </span>
+                    <h3>Reestruturação Patrimonial</h3>
+                    <ul>
+                        <li><i data-lucide="check-circle-2"></i> Desenho de um modelo de consolidação (Estruturas Holding).</li>
+                        <li><i data-lucide="check-circle-2"></i> Isolamento do risco entre as operações comerciais e o patrimônio.</li>
+                        <li><i data-lucide="check-circle-2"></i> Adequação dos quadros administrativos para conformidade legal.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 4: Pilar Logístico e Tributário -->
+        <div id="slide4" class="slide">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 2.5rem;">
+                <div>
+                    <h2 class="header-title">Pilar 2: Malha Logística e Tributária</h2>
+                    <p class="header-subtitle" style="margin-bottom: 0;">Fim do "Frete Duplo" e otimização da margem na importação.</p>
+                </div>
+                <img src="logotipo_grupo-villela(1).png" alt="Grupo Villela" style="height: 60px; width: auto; object-fit: contain;" onerror="this.style.display='none';">
+            </div>
+            
+            <div class="card-grid">
+                <div class="card">
+                    <span class="status-badge badge-warning">
+                        <i data-lucide="route-off" size="16"></i> Risco Mapeado
+                    </span>
+                    <h3>Ineficiência de Malha</h3>
+                    <p>A transição física de produtos importados entre estados sem planeamento gera perda de benefícios, dupla tributação (ST) e esmaga a margem do e-commerce.</p>
+                </div>
+                <div class="card">
+                    <span class="status-badge badge-success">
+                        <i data-lucide="bar-chart-3" size="16"></i> Solução Proposta
+                    </span>
+                    <h3>Redesenho de Fluxo</h3>
+                    <ul>
+                        <li><i data-lucide="check-circle-2"></i> Maximização de Tratamentos Tributários Diferenciados (TTDs).</li>
+                        <li><i data-lucide="check-circle-2"></i> Estruturação do fluxo de faturação direto do Hub Logístico (B2C).</li>
+                        <li><i data-lucide="check-circle-2"></i> Redução drástica do ICMS em operações interestaduais.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 5: Pilar Comercial -->
+        <div id="slide5" class="slide">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 2.5rem;">
+                <div>
+                    <h2 class="header-title">Pilar 3: Harmonização de Canais</h2>
+                    <p class="header-subtitle" style="margin-bottom: 0;">Estratégias para escalar o e-commerce sem canibalizar os seus distribuidores.</p>
+                </div>
+                <img src="logotipo_grupo-villela(1).png" alt="Grupo Villela" style="height: 60px; width: auto; object-fit: contain;" onerror="this.style.display='none';">
+            </div>
+            
+            <div class="card-grid">
+                <div class="card">
+                    <span class="status-badge badge-warning">
+                        <i data-lucide="swords" size="16"></i> Risco Mapeado
+                    </span>
+                    <h3>Conflito de Canal</h3>
+                    <p>A venda direta online com preços predatórios destrói a confiança da rede de lojistas físicos e distribuidores, travando o crescimento da marca.</p>
+                </div>
+                <div class="card">
+                    <span class="status-badge badge-success">
+                        <i data-lucide="gem" size="16"></i> Solução Proposta
+                    </span>
+                    <h3>Arquitetura Omnichannel</h3>
+                    <ul>
+                        <li><i data-lucide="check-circle-2"></i> Implementação de uma Política de Preços (MAP).</li>
+                        <li><i data-lucide="check-circle-2"></i> Engenharia de Portfólio: criação de SKUs exclusivos por canal.</li>
+                        <li><i data-lucide="check-circle-2"></i> Modelagem O2O: transformar o lojista num parceiro de entrega.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Inicializa os ícones Lucide
+        lucide.createIcons();
+
+        function showSlide(slideId, btnId) {
+            // Esconde todos os ecrãs/slides
+            document.querySelectorAll('.slide').forEach(slide => {
+                slide.classList.remove('active');
+            });
+            // Remove a classe active de todos os botões do menu lateral
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Mostra o slide selecionado
+            document.getElementById(slideId).classList.add('active');
+            
+            // Destaca o botão correspondente no menu lateral
+            if(btnId) {
+                document.getElementById(btnId).classList.add('active');
+            }
+        }
+    </script>
+</body>
+</html>
